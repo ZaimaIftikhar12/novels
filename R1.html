@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            position: relative;
+            z-index: 1;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://wallpapercave.com/wp/wp2036967.jpg') no-repeat center center/cover;
+            opacity: 0.9;
+            z-index: -1;
+        }
+        .register {
+            background-color: rgba(132, 141, 134, 0.6);
+            padding: 40px;
+            width: 40%;
+            border-radius: 10px;
+            box-shadow: 
+                0 4px 30px rgba(255, 0, 0, 0.6),
+                0 8px 60px rgba(0, 255, 0, 0.6),
+                0 12px 80px rgba(0, 0, 255, 0.6);
+            text-align: center;
+        }
+        h2 {
+            font-size: 30px;
+            color: rgb(14, 13, 13);
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        button {
+            padding: 10px;
+            width: 20%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="register">
+        <h2>Registration Form</h2>
+        <form id="registerForm" method="POST">
+            <input type="text" id="firstname" name="firstname" required placeholder="First Name">
+            <input type="text" id="lastname" name="lastname" required placeholder="Last Name">
+            <input type="email" id="email" name="email" required placeholder="E-mail">
+            <input type="password" id="password" name="password" required placeholder="Password (limit is 10 characters)">
+            <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm Password">
+            <button type="submit">Sign Up</button>
+            <h4>If you already have account <a href="L1.html">Click here</a> for login </h4>
+            <p id="error-message" class="error"></p> <!-- Error message will be displayed here -->
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#registerForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+                
+                // Clear previous error messages
+                $('#error-message').text('');
+
+                // Get form data
+                var firstname = $('#firstname').val();
+                var lastname = $('#lastname').val();
+                var email = $('#email').val();
+                var password = $('#password').val();
+                var confirmPassword = $('#confirm_password').val();
+
+                // Check if passwords match
+                if (password !== confirmPassword) {
+                    $('#error-message').text('Passwords do not match.');
+                    return;
+                }
+
+                // Check password length
+                if (password.length > 10) {
+                    $('#error-message').text('Password exceeds the limit of 10 characters.');
+                    return;
+                }
+
+                // Perform AJAX request
+                $.ajax({
+                    url: 'zainaby.php', // Changed to your PHP file name
+                    type: 'POST',
+                    data: {
+                        ajax: true,
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        password: password,
+                        confirm_password: confirmPassword
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Redirect on successful registration
+                            window.location.href = 'L1.html';
+                        } else {
+                            // Display error message
+                            $('#error-message').text(response.message);
+                        }
+                    },
+                    error: function() {
+                        $('#error-message').text('An error occurred. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
